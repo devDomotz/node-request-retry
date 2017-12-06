@@ -1,6 +1,6 @@
 {
   "name": "domotz-requestretry",
-  "description": "request-retry wrap nodejs request to retry http(s) requests in case of error",
+  "description": "request-retry which is compatible with Node 0.10.x",
   "version": "1.12.2",
   "author": {
     "name": "Francois-Guillaume Ribreau",
