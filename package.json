@@ -41,10 +41,10 @@
     ]
   },
   "dependencies": {
-    "extend": "^3.0.0",
-    "lodash": "^4.15.0",
-    "request": "^2.74.0",
-    "when": "^3.7.7"
+    "extend": "~3.0.1",
+    "lodash": "~4.17.4",
+    "request": "~2.81.0",
+    "when": "~3.7.8"
   },
   "devDependencies": {
     "bluebird": "^3.4.6",
