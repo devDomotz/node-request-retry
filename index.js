@@ -7,11 +7,16 @@
  * MIT Licensed
  *
  */
+var lodhash_path = './libs/lodash'
 var extend = require('extend');
 var when = require('when');
 var request = require('request');
 var RetryStrategies = require('./strategies');
-var _ = require('lodash');
+var _isString = require(lodhash_path).isString
+var _isObject = require(lodhash_path).isObject
+var _chain = require(lodhash_path).chain
+var _once = require(lodhash_path).once
+var _isFunction = require(lodhash_path).isFunction
 
 var DEFAULTS = {
   maxAttempts: 5, // try 5 times
@@ -46,13 +51,13 @@ function makePromise(requestInstance, promiseFactoryFn) {
 
 function Request(url, options, f, retryConfig) {
   // ('url')
-  if(_.isString(url)){
+  if(_isString(url)){
     // ('url', f)
-    if(_.isFunction(options)){
+    if(_isFunction(options)){
       f = options;
     }
 
-    if(!_.isObject(options)){
+    if(!_isObject(options)){
       options = {};
     }
 
@@ -60,8 +65,8 @@ function Request(url, options, f, retryConfig) {
     options.url = url;
   }
 
-  if(_.isObject(url)){
-    if(_.isFunction(options)){
+  if(_isObject(url)){
+    if(_isFunction(options)){
       f = options;
     }
     options = url;
@@ -82,18 +87,18 @@ function Request(url, options, f, retryConfig) {
    * Return true if the request should be retried
    * @type {Function} (err, response) -> Boolean
    */
-  this.retryStrategy = _.isFunction(options.retryStrategy) ? options.retryStrategy : RetryStrategies.HTTPOrNetworkError;
+  this.retryStrategy = _isFunction(options.retryStrategy) ? options.retryStrategy : RetryStrategies.HTTPOrNetworkError;
 
   /**
    * Return a number representing how long request-retry should wait before trying again the request
    * @type {Boolean} (err, response, body) -> Number
    */
-  this.delayStrategy = _.isFunction(options.delayStrategy) ? options.delayStrategy : function() { return this.retryDelay; };
+  this.delayStrategy = _isFunction(options.delayStrategy) ? options.delayStrategy : function() { return this.retryDelay; };
 
   this._timeout = null;
   this._req = null;
 
-  this._callback = _.isFunction(f) ? _.once(f) : null;
+  this._callback = _isFunction(f) ? _once(f) : null;
 
   // create the promise only when no callback was provided
   if (!this._callback) {
@@ -160,7 +165,7 @@ Request.prototype.abort = function () {
 });
 
 function Factory(url, options, f) {
-  var retryConfig = _.chain(_.isObject(url) ? url : options || {}).defaults(DEFAULTS).pick(Object.keys(DEFAULTS)).value();
+  var retryConfig = _chain(_isObject(url) ? url : options || {}).defaults(DEFAULTS).pick(Object.keys(DEFAULTS)).value();
   var req = new Request(url, options, f, retryConfig);
   req._tryUntilFail();
   return req;
@@ -170,13 +175,13 @@ function Factory(url, options, f) {
 function makeHelper(obj, verb) {
   obj[verb] = function helper(url, options, f) {
     // ('url')
-    if(_.isString(url)){
+    if(_isString(url)){
       // ('url', f)
-      if(_.isFunction(options)){
+      if(_isFunction(options)){
         f = options;
       }
 
-      if(!_.isObject(options)){
+      if(!_isObject(options)){
         options = {};
       }
 
@@ -184,8 +189,8 @@ function makeHelper(obj, verb) {
       options.url = url;
     }
 
-    if(_.isObject(url)){
-      if(_.isFunction(options)){
+    if(_isObject(url)){
+      if(_isFunction(options)){
         f = options;
       }
       options = url;
